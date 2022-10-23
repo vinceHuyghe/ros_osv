@@ -1,4 +1,7 @@
 import rospy
+import tf
+from tf.msg import tfMessage
+
 
 from py_openshowvar import OpenShowVar()
 
@@ -6,29 +9,33 @@ from py_openshowvar import OpenShowVar()
 class OsvNode():
     
     def __init__(self,ip: str, port: int) -> None:
-        name = 'osv'
-        rospy.init_node(name)
+        rospy.init_node('osv')
+        self.name = rospy.get_name()
         # init connection
-        client=OpenShowVar(ip,port)
-        rospy.loginfo(f'{name} node started, CONNECTED {client.can_connect}')
-        
-        
-        # tf publisher
-          
+        self.client=OpenShowVar(ip,port)
+        self.tf_br = tf.TransformBroadcaster()
+        rospy.loginfo(f'{self.name} node started, KVP CONNECTED {client.can_connect}')
+        self.tfmsg = tfMessage()
+                
+    def read_var(self, var: str)->str:
+        self.client.read(var)
         pass
     
-    def publish_tf_from_var():
-        pass
+    def resp_to_tf(self, resp: str) -> tfMessage:
         
-    def read_var():
-        pass
-    
-    def main():
-        osv = OsvNode('192.168.19.132',7001)
+        self.tfmsg = resp
+        
+        return self.tfmsg
+        
+        
+            
+    def run(self):      
         while not rospy.is_shutdown:
+            self.tf_br.sendTransform(self.resp_to_tf(self.read_var('tcp_pose')))
             
 
 if __name__ == '__main__':
     
-   main()
+    osv = OsvNode('192.168.19.132',7001)
+    osv.run()
   
