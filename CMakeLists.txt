@@ -65,7 +65,10 @@ ${catkin_INCLUDE_DIRS}
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
-
+# Install launch files
+install(DIRECTORY launch/
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+    )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # Install launch files
