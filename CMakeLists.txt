@@ -59,11 +59,11 @@ ${catkin_INCLUDE_DIRS}
 #############
 
 
-# catkin_install_python(
-#   PROGRAMS
-
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+catkin_install_python(
+  PROGRAMS
+  scripts/osv_broadcast.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 # Install launch files
 install(DIRECTORY launch/
