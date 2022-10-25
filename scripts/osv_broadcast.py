@@ -1,12 +1,13 @@
 import rospy
-import tf
+import tf.transformations
 import tf2_ros
 from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Header
 from geometry_msgs.msg import TransformStamped
 
 
-from py_openshowvar import OpenShowVar
+from ros_osv.py_openshowvar import OpenShowVar
+import math
 
 
 class OsvNode:
@@ -43,16 +44,18 @@ class OsvNode:
             map(float, [var[2], var[4], var[6], var[8], var[10], var[12], var[14]])
         )
 
-        quat = tf.transformations.quaternion_from_euler(pos[4], pos[5], pos[6])
+        quat = tf.transformations.quaternion_from_euler(
+            math.radians(pos[4]), math.radians(pos[5]), math.radians(pos[6]), 'rzyx'
+        )
 
         tfs = TransformStamped()
 
         tfs.header.stamp = rospy.Time.now()
         tfs.header.frame_id = 'base_link'
         tfs.child_frame_id = 'tcp'
-        tfs.transform.translation.x = pos[0]
-        tfs.transform.translation.y = pos[1]
-        tfs.transform.translation.z = pos[2]
+        tfs.transform.translation.x = pos[0] / 1000
+        tfs.transform.translation.y = pos[1] / 1000
+        tfs.transform.translation.z = pos[2] / 1000
         tfs.transform.rotation.x = quat[0]
         tfs.transform.rotation.y = quat[1]
         tfs.transform.rotation.z = quat[2]
@@ -64,4 +67,4 @@ class OsvNode:
 if __name__ == '__main__':
 
     osv = OsvNode("192.168.1.100", 7000)
-    osv.broadcast_tf_from_var()
+    osv.broadcast()
