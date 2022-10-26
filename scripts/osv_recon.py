@@ -73,26 +73,25 @@ class OsvRecon:
                 output_state = True
             if var == 'FALSE':
                 output_state = False
-                
-            print(output_state)
+
 
             if output_state:
                 # Start reconstruction with service srv_req
                 resp = self.start_recon(start_srv_req)
                 if resp:
-                    rospy.loginfo("robot program: reconstruction started successfully")
+                    rospy.loginfo(f'{self.name}: reconstruction started successfully')
                     recon_started = True
                 else:
-                    rospy.loginfo("robot program: failed to start reconstruction")
+                    rospy.loginfo(f'{self.name}: failed to start reconstruction')
 
             if not output_state and recon_started:
                 # Stop reconstruction with service srv_req
                 resp = self.stop_recon(stop_srv_req)
 
                 if resp:
-                    rospy.loginfo("robot program: reconstruction stopped successfully")
+                    rospy.loginfo(f'{self.name}: reconstruction stopped successfully')
                 else:
-                    rospy.loginfo("robot program: failed to stop reconstruction")
+                    rospy.loginfo(f'{self.name}: failed to stop reconstruction')
 
             # Read tcp position relative to base frame
             var = self.client.read('$POS_ACT', debug=False)
