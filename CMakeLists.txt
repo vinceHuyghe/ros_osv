@@ -61,7 +61,7 @@ ${catkin_INCLUDE_DIRS}
 
 catkin_install_python(
   PROGRAMS
-  scripts/osv_broadcast.py
+  scripts/osv_recon.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
