@@ -19,8 +19,8 @@ import math
 
 # reconstruction parameters
 start_srv_req = StartReconstructionRequest()
-start_srv_req.tracking_frame = "tool0"
-start_srv_req.relative_frame = "base_link"
+start_srv_req.tracking_frame = 'tcp'
+start_srv_req.relative_frame = 'base_link'
 start_srv_req.translation_distance = 0.0
 start_srv_req.rotational_distance = 0.0
 start_srv_req.live = True
@@ -54,7 +54,7 @@ class OsvRecon:
             f'{self.name} node started, KVP CONNECTED {self.client.can_connect}'
         )
         rospy.wait_for_service('/start_reconstruction')
-        rospy.loginfo('robot program: waiting for /start_reconstruction srv')
+        rospy.loginfo(f'{self.name} waiting for /start_reconstruction srv')
         self.start_recon = rospy.ServiceProxy(
             '/start_reconstruction', StartReconstruction
         )
@@ -62,6 +62,7 @@ class OsvRecon:
 
     def read_and_broadcast(self):
 
+        rospy.loginfo(f'{self.name}: ready to start recon')
         recon_started = False
 
         while not rospy.is_shutdown():
@@ -75,7 +76,7 @@ class OsvRecon:
                 output_state = False
 
 
-            if output_state:
+            if output_state and not recon_started:
                 # Start reconstruction with service srv_req
                 resp = self.start_recon(start_srv_req)
                 if resp:
@@ -87,6 +88,7 @@ class OsvRecon:
             if not output_state and recon_started:
                 # Stop reconstruction with service srv_req
                 resp = self.stop_recon(stop_srv_req)
+                recon_started = False
 
                 if resp:
                     rospy.loginfo(f'{self.name}: reconstruction stopped successfully')
