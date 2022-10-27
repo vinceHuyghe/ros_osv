@@ -75,7 +75,6 @@ class OsvRecon:
             if var == 'FALSE':
                 output_state = False
 
-
             if output_state and not recon_started:
                 # Start reconstruction with service srv_req
                 resp = self.start_recon(start_srv_req)
